@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Inertia\{Inertia, Response};
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
-use Inertia\Response;
+use Illuminate\Http\{RedirectResponse, Request};
 
 class ConfirmablePasswordController extends Controller
 {
@@ -17,7 +15,7 @@ class ConfirmablePasswordController extends Controller
      */
     public function show(): Response
     {
-        return Inertia::render('Auth/ConfirmPassword');
+        return Inertia::render('auth/confirm-password');
     }
 
     /**

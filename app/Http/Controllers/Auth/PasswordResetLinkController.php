@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Auth;
 
+use Inertia\{Inertia, Response};
 use App\Http\Controllers\Controller;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Validation\ValidationException;
-use Inertia\Inertia;
-use Inertia\Response;
+use Illuminate\Http\{RedirectResponse, Request};
 
 class PasswordResetLinkController extends Controller
 {
@@ -17,7 +15,7 @@ class PasswordResetLinkController extends Controller
      */
     public function create(): Response
     {
-        return Inertia::render('Auth/ForgotPassword', [
+        return Inertia::render('auth/forgot-password', [
             'status' => session('status'),
         ]);
     }
