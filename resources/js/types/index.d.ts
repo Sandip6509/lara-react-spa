@@ -40,3 +40,34 @@ export interface User {
     updated_at: string;
     [key: string]: unknown;
 }
+
+export interface TaskStats {
+    totalPendingTasks: number;
+    myPendingTasks: number;
+    totalProgressTasks: number;
+    myProgressTasks: number;
+    totalCompletedTasks: number;
+    myCompletedTasks: number;
+}
+
+export interface TaskDashboardProps {
+    stats: TaskStats;
+}
+
+export interface Task {
+    id: number;
+    name: string;
+    status: string;
+    due_date: string;
+    project: {
+        id: number;
+        name: string
+    };
+    [key: string]: unknown;
+}
+
+export interface DashboardProps {
+    auth: Auth;
+    taskStats: TaskStats;
+    activeTasks: Task[];
+}
