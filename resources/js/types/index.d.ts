@@ -61,7 +61,7 @@ export interface Task {
     due_date: string;
     project: {
         id: number;
-        name: string
+        name: string;
     };
     [key: string]: unknown;
 }
@@ -70,4 +70,59 @@ export interface DashboardProps {
     auth: Auth;
     taskStats: TaskStats;
     activeTasks: Task[];
+}
+
+export interface Column {
+    label: string;
+    accessor?: keyof T;
+    render?: (row: T, rowIndex: number) => React.ReactNode;
+}
+
+export interface TableProps {
+    columns: Column[];
+    data: Record<string, unknown>[];
+    sortField?: string;
+    sortDirection?: string;
+    onSort?: (field: string, direction: 'asc' | 'desc') => void;
+    searchQuery?: string;
+    onSearchChange?: (query: string) => void;
+    statusFilter?: string;
+    onStatusFilterChange?: (status: string) => void;
+}
+
+export interface Project {
+    id: number;
+    image_path: string;
+    name: string;
+    status: keyof typeof STATUS_CLASS_MAP;
+    created_at: string;
+    due_date: string;
+    created_by: {
+        name: string;
+    };
+    [key: string]: unknown; 
+}
+
+export interface QueryParams {
+    name?: string;
+    status?: string;
+    sortField?: string;
+    sortDirection?: string;
+}
+
+export interface ProjectProps {
+    projects: {
+        data: Project[];
+        links: unknown[];
+        meta: unknown;
+    };
+    queryParams: QueryParams;
+    success?: string;
+    [key: string]: unknown;
+}
+
+export interface PaginationProps {
+    currentPage: number;
+    totalPages: number;
+    onPageChange: (page: number) => void;
 }

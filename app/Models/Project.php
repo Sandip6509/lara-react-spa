@@ -13,6 +13,14 @@ class Project extends Model
 
     protected $guarded = ['id'];
 
+    protected function casts(): array
+    {
+        return [
+            'due_date' => 'date:Y-m-d',
+            'created_at' => 'date:Y-m-d',
+        ];
+    }
+
     public function tasks(): HasMany
     {
         return $this->hasMany(Task::class,'project_id');
