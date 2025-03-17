@@ -76,6 +76,7 @@ export interface Column {
     label: string;
     accessor?: keyof T;
     render?: (row: T, rowIndex: number) => React.ReactNode;
+    sortable?: boolean;
 }
 
 export interface TableProps {

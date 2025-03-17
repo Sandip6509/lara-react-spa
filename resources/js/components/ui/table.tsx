@@ -1,6 +1,7 @@
 import { TableProps } from '@/types';
 import { ArrowDown, ArrowUp, ArrowUpDown } from 'lucide-react';
 import { Input } from './input';
+import { STATUS_TEXT_MAP } from '@/constants';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './select';
 // import Pagination from './pagination';
 // import { useState } from 'react';
@@ -21,7 +22,6 @@ export default function Table({
 
     return (
         <div className='overflow-x-auto rounded-lg p-2'>
-            {/* Search and Filter Inputs */}
             <div className='flex space-x-4 mb-4'>
                 <Input
                     id='search'
@@ -37,14 +37,15 @@ export default function Table({
                     </SelectTrigger>
                     <SelectContent>
                         <SelectItem value=' '>Status</SelectItem>
-                        <SelectItem value='pending'>Pending</SelectItem>
-                        <SelectItem value='in_progress'>In Progress</SelectItem>
-                        <SelectItem value='completed'>Completed</SelectItem>
+                        {Object.keys(STATUS_TEXT_MAP).map((status) => (
+                            <SelectItem key={status} value={status}>
+                                {STATUS_TEXT_MAP[status as keyof typeof STATUS_TEXT_MAP]}
+                            </SelectItem>
+                        ))}
                     </SelectContent>
                 </Select>
             </div>
 
-            {/* Table */}
             <div className='overflow-x-auto'>
                 <table className='min-w-full bg-card border border-border rounded-lg overflow-hidden'>
                     <thead className='bg-secondary'>
@@ -63,7 +64,7 @@ export default function Table({
                                 >
                                     <div className='flex items-center space-x-1'>
                                         <span>{column.label}</span>
-                                        {column.accessor && (
+                                        {column.accessor && (column.sortable === true) && (
                                             sortField === column.accessor ? (
                                                 sortDirection === 'asc' ? (
                                                     <ArrowUp />
@@ -110,7 +111,7 @@ export default function Table({
                             <tr>
                                 <td
                                     colSpan={columns.length}
-                                    className='text-center py-4 text-gray-500 dark:text-gray-400'
+                                    className='text-center py-4 text-foreground'
                                 >
                                     No data available.
                                 </td>
@@ -118,7 +119,7 @@ export default function Table({
                         )}
                     </tbody>
                 </table>
-            {/* <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} /> */}
+                {/* <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} /> */}
             </div>
         </div>
     );

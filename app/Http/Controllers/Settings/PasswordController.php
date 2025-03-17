@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers\Settings;
 
-use Inertia\{Inertia, Response};
 use App\Http\Controllers\Controller;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Illuminate\Http\{RedirectResponse, Request};
+use Inertia\Inertia;
+use Inertia\Response;
 
 class PasswordController extends Controller
 {
-     /**
+    /**
      * Show the user's password settings page.
      */
     public function edit(Request $request): Response
     {
-        return Inertia::render('settings/password',[
+        return Inertia::render('settings/password', [
             'mustVerifyEmail' => $request->user() instanceof MustVerifyEmail,
             'status' => $request->session()->get('status'),
         ]);

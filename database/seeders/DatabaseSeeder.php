@@ -18,14 +18,14 @@ class DatabaseSeeder extends Seeder
             'name' => 'Zura',
             'email' => 'zura@example.com',
             'password' => Hash::make('password'),
-            'email_verified_at' => time()
+            'email_verified_at' => time(),
         ]);
         User::factory()->create([
             'id' => 2,
             'name' => 'John Smith',
             'email' => 'john@example.com',
             'password' => Hash::make('password'),
-            'email_verified_at' => time()
+            'email_verified_at' => time(),
         ]);
 
         Project::factory()

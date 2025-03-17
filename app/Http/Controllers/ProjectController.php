@@ -2,46 +2,42 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Project;
-use Illuminate\Http\Request;
 use Inertia\Inertia;
+use App\Models\Project;
+use Illuminate\Support\Str;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\{Auth, Storage};
 
 class ProjectController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // $request = request()->only(['name', 'status', 'sortField', 'sortDirection']);
-        
-        // $allowedSortFields = ['id', 'name', 'status', 'created_at', 'due_date'];
+        $sortField = $request->input('sortField', 'id');
+        $sortDirection = $request->input('sortDirection', 'desc');
+        $searchQuery = $request->input('name', '');
+        $statusFilter = $request->input('status', '');
 
-        // $sortField = in_array($request['sortField'] ?? 'created_at', $allowedSortFields)
-        //     ? $request['sortField']
-        //     : 'created_at';
-
-        // $sortDirection = in_array($request['sortDirection'] ?? 'desc', ['asc', 'desc'])
-        //     ? $request['sortDirection']
-        //     : 'desc';
-
-        $query = Project::select('id', 'name', 'status', 'created_at', 'due_date', 'created_by')
+        $query = Project::select('id', 'name', 'image_path', 'status', 'created_at', 'due_date', 'created_by')
             ->with('createdBy:id,name');
 
-        // if (!empty($request['name'])) {
-        //     $query->where('name', 'like', '%' . $request['name'] . '%');
-        // }
-
-        // if (!empty($request['status'])) {
-        //     $query->where('status', $request['status']);
-        // }
-
-        $projects = $query //->orderBy($sortField, $sortDirection)
+        $projects = $query
+            ->when($searchQuery, function (Builder $q) use ($searchQuery) {
+                $q->where('name', 'like', '%'.$searchQuery.'%');
+            })
+            ->when($statusFilter, function (Builder $q) use ($statusFilter) {
+                $q->where('status', $statusFilter);
+            })
+            ->orderBy($sortField, $sortDirection)
             ->paginate(10);
-        // dd($projects);
-        return Inertia::render('projects/index', [
+
+            return Inertia::render('projects/index', [
             'projects' => $projects,
-            'queryParams' => '',
+            'queryParams' => $request->query(),
             'success' => session('success'),
         ]);
     }
@@ -51,7 +47,7 @@ class ProjectController extends Controller
      */
     public function create()
     {
-        //
+        return Inertia::render('projects/create-edit');
     }
 
     /**
@@ -59,23 +55,40 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'due_date' => 'nullable|date',
+            'description' => 'nullable',
+            'status' => ['required', Rule::in(['pending', 'in_progress', 'completed'])],
+        ]);
+
+        $validated['created_by'] = Auth::id();
+        $validated['updated_by'] = Auth::id();
+
+        if ($request->hasFile('image_path')) {
+            $validated['image_path'] = $request->file('image_path')->store('projects', 'public');
+        }
+
+        Project::create($validated);
+
+        return to_route('projects.index')->with('success', 'Project created successfully!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Project $project)
-    {
-        //
-    }
+    public function show(Project $project) {}
 
     /**
      * Show the form for editing the specified resource.
      */
     public function edit(Project $project)
     {
-        //
+        return Inertia::render('projects/create-edit',[
+            'project' => $project,
+            'isEdit' => true, 
+        ]);
     }
 
     /**
@@ -83,7 +96,25 @@ class ProjectController extends Controller
      */
     public function update(Request $request, Project $project)
     {
-        //
+        $validated = $request->validate([
+            'name' => 'required|max:255',
+            'image_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+            'due_date' => 'nullable|date',
+            'description' => 'nullable',
+            'status' => ['required', Rule::in(['pending', 'in_progress', 'completed'])],
+        ]);
+
+        if ($request->hasFile('image_path')) {
+            // Delete the old image if it exists
+            if ($project->image_path) {
+                Storage::disk('public')->delete($project->image_path);
+            }
+            $validated['image_path'] = $request->file('image_path')->store('projects', 'public');
+        }
+
+        $project->update($validated);
+
+        return to_route('projects.index')->with('success', 'Project updated successfully!');
     }
 
     /**
@@ -91,6 +122,12 @@ class ProjectController extends Controller
      */
     public function destroy(Project $project)
     {
-        //
+        $projectName = $project->name;
+        $project->delete();
+        if ($project->image_path) {
+            Storage::disk('public')->deleteDirectory(dirname($project->image_path));
+        }
+
+        return to_route('projects.index')->with('success', 'Project deleted successfully!');
     }
 }

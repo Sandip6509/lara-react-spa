@@ -3,8 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Task;
-use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -25,12 +25,13 @@ class DashboardController extends Controller
             )
             ->first();
 
-        $activeTasks = Task::select(['id', 'name', 'status', 'due_date','project_id'])->with('project:id,name')
+        $activeTasks = Task::select(['id', 'name', 'status', 'due_date', 'project_id'])->with('project:id,name')
             ->whereIn('status', ['pending', 'in_progress'])
             ->where('assigned_user_id', $user->id)
             ->latest()
             ->limit(10)
             ->get();
-        return Inertia::render('dashboard',compact('taskStats', 'activeTasks'));
+
+        return Inertia::render('dashboard', compact('taskStats', 'activeTasks'));
     }
 }

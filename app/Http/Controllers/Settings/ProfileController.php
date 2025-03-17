@@ -4,10 +4,10 @@ namespace App\Http\Controllers\Settings;
 
 use Inertia\{Inertia, Response};
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Settings\ProfileUpdateRequest;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Http\{RedirectResponse, Request};
+use App\Http\Requests\Settings\ProfileUpdateRequest;
 
 class ProfileController extends Controller
 {

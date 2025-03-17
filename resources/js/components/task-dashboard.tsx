@@ -24,7 +24,7 @@ export function TaskDashboard({ stats }: TaskDashboardProps) {
                             </CardTitle>
                         </CardHeader>
                         <CardContent className='text-3xl font-bold text-foreground'>
-                            <span className={task.myColor}>{task.myCount}</span> / <span className={task.totalColor}>{task.totalCount}</span>
+                            <span className={task.myColor}>{task.myCount ?? 0}</span> / <span className={task.totalColor}>{task.totalCount ?? 0}</span>
                         </CardContent>
                     </Card>
                 </motion.div>
