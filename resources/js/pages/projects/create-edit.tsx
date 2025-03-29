@@ -24,7 +24,7 @@ export default function CreateEdit() {
   ];
 
   // Initialize form data
-  const { data, setData, post, processing, errors } = useForm({
+  const { data, setData, post, put, processing, errors } = useForm({
     image_path: null as File | null,
     name: project?.name || '',
     status: project?.status || '',
@@ -36,12 +36,18 @@ export default function CreateEdit() {
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
+    const formData = new FormData(e.currentTarget);
+    if (data.image_path instanceof File) {
+      formData.append('image_path', data.image_path);
+    }
+    formData.append('name', data.name);
+    formData.append('status', data.status);
+    formData.append('description', data.description);
+    formData.append('due_date', data.due_date);
+
     if (isEdit) {
       // Use put for updating
-      post(route('projects.update', project.id), {
-        method: 'put',
-        ...data
-      });
+      put(route('projects.update', project.id), formData, { forceFormData: true });
     } else {
       // Use post for creating
       post(route('projects.store'));
@@ -158,7 +164,7 @@ export default function CreateEdit() {
             <div className='flex justify-end space-x-4'>
               <Button type='submit' variant='default' disabled={processing}>
                 {processing && <LoaderCircle className='h-4 w-4 animate-spin' />}
-                {isEdit ? 'Update Project' : 'Create Project'}
+                Submit
               </Button>
             </div>
           </form>

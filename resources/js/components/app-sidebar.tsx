@@ -10,29 +10,31 @@ import AppLogo from './app-logo';
 const mainNavItems: NavItem[] = [
     {
         title: 'Dashboard',
-        url: '/dashboard',
+        href: route('dashboard'),
         icon: LayoutGrid,
+        activeRoutes: ['dashboard'],
     },
     {
         title: 'Projects',
-        url: '/projects',
+        href: route('projects.index'),
         icon: FolderKanban,
+        activeRoutes: ['projects.*'],
     },
     {
         title: 'Tasks',
-        url: '/tasks',
+        href: route('tasks.index'),
         icon: PackageCheck,
+        activeRoutes: ['tasks.*'],
     },
     {
         title: 'Users',
-        url: '/users',
+        href: route('users.index'),
         icon: UsersRound,
+        activeRoutes: ['users.*'],
     },
 ];
 
-const footerNavItems: NavItem[] = [
-
-];
+const footerNavItems: NavItem[] = [];
 
 export function AppSidebar() {
     return (

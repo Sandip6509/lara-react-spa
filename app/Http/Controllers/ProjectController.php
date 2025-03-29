@@ -112,7 +112,7 @@ class ProjectController extends Controller
             $validated['image_path'] = $request->file('image_path')->store('projects', 'public');
         }
 
-        $project->update($validated);
+        $project->fill($validated)->save();
 
         return to_route('projects.index')->with('success', 'Project updated successfully!');
     }

@@ -25,7 +25,7 @@ export default function DeleteModel({ projectId }: { projectId: number }) {
         <div className='space-y-6'>
             <Dialog>
                 <DialogTrigger asChild>
-                    <Trash className='text-red-700 hover:text-red-500 transition-colors duration-300' />
+                    <Trash className='text-red-700 hover:text-red-500 transition-colors duration-300 cursor-pointer' />
                 </DialogTrigger>
                 <DialogContent>
                     <DialogTitle>Are you sure you want to delete?</DialogTitle>
