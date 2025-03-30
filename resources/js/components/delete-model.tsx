@@ -3,14 +3,15 @@ import { Dialog, DialogClose, DialogContent, DialogFooter } from './ui/dialog'
 import { DialogTitle, DialogTrigger } from '@radix-ui/react-dialog'
 import { Button } from './ui/button'
 import { Trash } from 'lucide-react'
+import { DeleteModelProps } from '@/types'
 
-export default function DeleteModel({ projectId }: { projectId: number }) {
+export default function DeleteModel({ routeName }: DeleteModelProps) {
     const { delete: destroy, processing, reset, clearErrors } = useForm()
 
     const deleteData: React.FormEventHandler = (e) => {
         e.preventDefault();
 
-        destroy(route('projects.destroy', projectId), {
+        destroy(routeName, {
             preserveScroll: true,
             onSuccess: () => closeModal(),
             onFinish: () => reset(),

@@ -6,15 +6,17 @@ import { STATUS_TEXT_MAP } from '@/constants';
 interface SearchFilterProps {
     searchQuery: string;
     onSearchChange: (query: string) => void;
-    statusFilter: string;
-    onStatusFilterChange: (value: string) => void;
+    statusFilter?: string;
+    onStatusFilterChange?: (value: string) => void;
+    isFilter: boolean;
 }
 
 export default function SearchFilter({
     searchQuery,
     onSearchChange,
     statusFilter,
-    onStatusFilterChange
+    onStatusFilterChange,
+    isFilter
 }: SearchFilterProps) {
     return (
         <>
@@ -36,21 +38,23 @@ export default function SearchFilter({
                     </button>
                 )}
             </div>
-            <div className='w-full'>
-                <Select value={statusFilter} onValueChange={onStatusFilterChange}>
-                    <SelectTrigger className="p-2 rounded w-full">
-                        <SelectValue placeholder="Status" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        <SelectItem value=" ">All Status</SelectItem>
-                        {Object.keys(STATUS_TEXT_MAP).map((status) => (
-                            <SelectItem key={status} value={status}>
-                                {STATUS_TEXT_MAP[status as keyof typeof STATUS_TEXT_MAP]}
-                            </SelectItem>
-                        ))}
-                    </SelectContent>
-                </Select>
-            </div>
+            {isFilter && (
+                <div className='w-full'>
+                    <Select value={statusFilter} onValueChange={onStatusFilterChange}>
+                        <SelectTrigger className="p-2 rounded w-full">
+                            <SelectValue placeholder="Status" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectItem value=" ">All Status</SelectItem>
+                            {Object.keys(STATUS_TEXT_MAP).map((status) => (
+                                <SelectItem key={status} value={status}>
+                                    {STATUS_TEXT_MAP[status as keyof typeof STATUS_TEXT_MAP]}
+                                </SelectItem>
+                            ))}
+                        </SelectContent>
+                    </Select>
+                </div>
+            )}
         </>
     )
 }

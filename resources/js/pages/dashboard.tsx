@@ -1,4 +1,4 @@
-import { ActiveTasksTable } from '@/components/active-tasks-table';
+import { ActiveTasks } from '@/components/active-tasks';
 import { TaskDashboard } from '@/components/task-dashboard';
 import AppLayout from '@/layouts/app-layout';
 import { DashboardProps, type BreadcrumbItem } from '@/types';
@@ -17,7 +17,7 @@ export default function Dashboard({ taskStats, activeTasks }: DashboardProps) {
             <Head title='Dashboard' />
             <div className='flex h-full flex-1 flex-col gap-4 rounded-xl p-2'>
                 <TaskDashboard stats={taskStats} />
-                <ActiveTasksTable activeTasks={activeTasks} />
+                <ActiveTasks activeTasks={activeTasks} />
             </div>
         </AppLayout>
     );

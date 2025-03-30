@@ -35,9 +35,9 @@ export interface User {
     name: string;
     email: string;
     avatar?: string;
-    email_verified_at: string | null;
+    email_verified_at?: string | null;
     created_at: string;
-    updated_at: string;
+    updated_at?: string;
     [key: string]: unknown;
 }
 
@@ -122,8 +122,82 @@ export interface ProjectProps {
     [key: string]: unknown;
 }
 
+export interface Task {
+    id: number;
+    image_path: string;
+    name: string;
+    status: keyof typeof STATUS_CLASS_MAP;
+    created_at: string;
+    due_date: string;
+    created_by: {
+        name: string;
+    };
+    [key: string]: unknown; 
+}
+
+export interface TaskProps {
+    tasks: {
+        data: Task[];
+        links: unknown[];
+        meta: unknown;
+    };
+    queryParams: QueryParams;
+    success?: string;
+    [key: string]: unknown;
+}
+
 export interface PaginationProps {
     currentPage: number;
     totalPages: number;
     onPageChange: (page: number) => void;
+}
+
+export interface ProjectForm {
+    id: number;
+    image_path: string | File;
+    name: string;
+    status: string;
+    due_date: string;
+    description: string;
+    _method?: string;
+    [key: string]: unknown;
+}
+
+export interface TaskForm {
+    id: number;
+    image_path: string | File;
+    name: string;
+    status: string;
+    due_date: string;
+    description: string;
+    project_id: string | number;
+    assigned_user_id: string | number;
+    priority: string;
+    _method?: string;
+    [key: string]: unknown;
+}
+
+export interface DeleteModelProps {
+    routeName: string;
+}
+
+export interface UserProps {
+    users: {
+        data: User[];
+        links: unknown[];
+        meta: unknown;
+    };
+    queryParams: QueryParams;
+    success?: string;
+    [key: string]: unknown;
+}
+
+export interface UserForm {
+    id: number;
+    name: string;
+    email: string;
+    password: string;
+    password_confirmation: string;
+    _method?: string;
+    [key: string]: unknown;
 }

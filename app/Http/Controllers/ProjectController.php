@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use Inertia\Inertia;
 use App\Models\Project;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Eloquent\Builder;
@@ -103,13 +102,17 @@ class ProjectController extends Controller
             'description' => 'nullable',
             'status' => ['required', Rule::in(['pending', 'in_progress', 'completed'])],
         ]);
+        
+        $originalPath = $project->getRawOriginal('image_path');
 
         if ($request->hasFile('image_path')) {
             // Delete the old image if it exists
-            if ($project->image_path) {
-                Storage::disk('public')->delete($project->image_path);
+            if ($originalPath) {
+                Storage::disk('public')->delete($originalPath);
             }
             $validated['image_path'] = $request->file('image_path')->store('projects', 'public');
+        }else{
+            $validated['image_path'] = $originalPath;
         }
 
         $project->fill($validated)->save();

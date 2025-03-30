@@ -1,9 +1,10 @@
 import { Task } from '@/types';
 import { Clock, Loader2 } from 'lucide-react';
-import { JSX } from 'react';
+import { JSX, useMemo } from 'react';
 import { Link } from '@inertiajs/react';
+import Table from './ui/table';
 
-export function ActiveTasksTable({ activeTasks }: { activeTasks: Task[] }) {
+export function ActiveTasks({ activeTasks }: { activeTasks: Task[] }) {
     const statusIcons: { [key in Task['status']]: JSX.Element } = {
         pending: <Clock className='text-yellow-500 size-5' />,
         in_progress: <Loader2 className='text-blue-500 size-5 animate-spin' />,
@@ -12,11 +13,43 @@ export function ActiveTasksTable({ activeTasks }: { activeTasks: Task[] }) {
     const truncateText = (text: string, length: number = 20) =>
         text.length > length ? `${text.slice(0, length)}...` : text;
 
+    const columns = useMemo(() => [
+        {
+            label: '#',
+            accessor: 'id',
+            sortable: false,
+        },
+        {
+            label: 'Project Name',
+            accessor: 'project.name',
+            sortable: false,
+        },
+        {
+            label: 'Task',
+            accessor: 'name',
+            sortable: false,
+        },
+        {
+            label: 'Status',
+            accessor: 'status',
+            sortable: false,
+        },
+        {
+            label: 'Due Date',
+            accessor: 'due_date',
+            sortable: false,
+        },
+    ], []);
     return (
         <div className='min-h-[100vh] flex-1 overflow-hidden rounded-xl border border-sidebar-border/70 dark:border-sidebar-border md:min-h-min'>
             <div className=' p-6 rounded-xl'>
                 <h2 className='text-xl font-semibold text-foreground mb-2'>My Active Tasks</h2>
-                <div className='overflow-x-auto'>
+                <Table
+                    columns={columns}
+                    data={activeTasks}
+                />
+                {/* <div className='overflow-x-auto'>
+                    
                     <table className='min-w-full bg-card border border-border rounded-lg overflow-hidden'>
                         <thead className='bg-secondary'>
                             <tr>
@@ -61,7 +94,7 @@ export function ActiveTasksTable({ activeTasks }: { activeTasks: Task[] }) {
                             )}
                         </tbody>
                     </table>
-                </div>
+                </div> */}
             </div>
         </div>
     );

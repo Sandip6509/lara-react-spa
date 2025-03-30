@@ -93,7 +93,7 @@ export default function Project({ projects, queryParams, success }: ProjectProps
             accessor: 'actions', label: 'Actions', render: (item: Project) => (
                 <div className="flex space-x-2 gap-2" >
                     <Link href={route('projects.edit', item.id)}><SquarePen className='text-green-700 hover:text-green-500 transition-colors duration-300' /></Link>
-                    <DeleteModel projectId={item.id} />
+                    <DeleteModel routeName={route('projects.destroy', item.id)} />
                 </div >
             ), sortable: false
         },
@@ -111,6 +111,7 @@ export default function Project({ projects, queryParams, success }: ProjectProps
                                 onSearchChange={handleSearchChange}
                                 statusFilter={filters.status as string}
                                 onStatusFilterChange={handleStatusChange}
+                                isFilter={true}
                             />
                         </div>
 

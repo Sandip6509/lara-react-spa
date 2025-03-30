@@ -1,5 +1,5 @@
 import AppLayout from '@/layouts/app-layout';
-import { BreadcrumbItem } from '@/types';
+import { BreadcrumbItem, ProjectForm } from '@/types';
 import { Head, useForm, usePage } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { FormEvent } from 'react';
@@ -13,10 +13,14 @@ import { Textarea } from '@/components/ui/textarea';
 import { LoaderCircle } from 'lucide-react';
 
 export default function CreateEdit() {
-  const { project, isEdit } = usePage<{ project: { id: number; name: string; status: string; description: string; due_date: string; image_url?: string }, isEdit: boolean }>().props;
+  const { project, isEdit } = usePage<{ project: ProjectForm, isEdit: boolean }>().props;
 
   // Define breadcrumbs dynamically based on isEdit
   const breadcrumbs: BreadcrumbItem[] = [
+    {
+      title: 'Projects',
+      href: route('projects.index'),
+    },
     {
       title: isEdit ? 'Project-Edit' : 'Project-Create',
       href: isEdit ? route('projects.edit', project?.id) : route('projects.create'),
@@ -24,32 +28,22 @@ export default function CreateEdit() {
   ];
 
   // Initialize form data
-  const { data, setData, post, put, processing, errors } = useForm({
-    image_path: null as File | null,
+  const { data, setData, post, processing, errors } = useForm({
+    image_path: '' as string | File,
     name: project?.name || '',
     status: project?.status || '',
     description: project?.description || '',
     due_date: project?.due_date || '',
+    ...(isEdit && { _method: 'PUT' }),
   });
 
   // Handle form submission
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const formData = new FormData(e.currentTarget);
-    if (data.image_path instanceof File) {
-      formData.append('image_path', data.image_path);
-    }
-    formData.append('name', data.name);
-    formData.append('status', data.status);
-    formData.append('description', data.description);
-    formData.append('due_date', data.due_date);
-
-    if (isEdit) {
-      // Use put for updating
-      put(route('projects.update', project.id), formData, { forceFormData: true });
+    if (isEdit && project?.id) {
+      post(route('projects.update', project.id));
     } else {
-      // Use post for creating
       post(route('projects.store'));
     }
   };
@@ -71,27 +65,27 @@ export default function CreateEdit() {
                 <Label htmlFor='image_path' className='text-sm font-medium text-foreground'>
                   Project Image
                 </Label>
-                {isEdit && project?.image_url && (
-                  <div className='mb-4'>
+                <div className='flex gap-2'>
+                  {isEdit && project?.image_path && (
                     <img
-                      src={project.image_url}
+                      src={typeof project.image_path === 'string' ? project.image_path : undefined}
                       alt='Project Image'
-                      className='w-32 h-32 object-cover rounded-md'
+                      className='w-9 h-9 object-cover rounded-md'
                     />
-                  </div>
-                )}
-                <Input
-                  id='image_path'
-                  type='file'
-                  name='image_path'
-                  onChange={(e) => {
-                    if (e.target.files && e.target.files[0]) {
-                      setData('image_path', e.target.files[0]);
-                    }
-                  }}
-                  className='w-full block'
-                />
-                <InputError message={errors.image_path} className='mt-2' />
+                  )}
+                  <Input
+                    id='image_path'
+                    type='file'
+                    name='image_path'
+                    onChange={(e) => {
+                      if (e.target.files && e.target.files[0]) {
+                        setData('image_path', e.target.files[0] as File);
+                      }
+                    }}
+                    className='w-full block'
+                  />
+                  <InputError message={errors.image_path} className='mt-2' />
+                </div>
               </div>
               <div className='flex-1 space-y-2'>
                 <Label htmlFor='name' className='text-sm font-medium text-foreground'>
@@ -132,17 +126,19 @@ export default function CreateEdit() {
                 </Select>
                 <InputError message={errors.status} className='mt-2' />
               </div>
-              <div className='flex flex-col space-y-2'>
+              <div className='flex-1 space-y-2'>
                 <Label htmlFor='due_date' className='mb-1 text-sm font-medium text-foreground'>
                   Due Date
                 </Label>
-                <DatePickerInput
-                  id='due_date'
-                  name='due_date'
-                  value={data.due_date}
-                  onChange={(value) => setData('due_date', value)}
-                  className='w-full'
-                />
+                <div>
+                  <DatePickerInput
+                    id='due_date'
+                    name='due_date'
+                    value={data.due_date}
+                    onChange={(value) => setData('due_date', value)}
+                    className='w-full'
+                  />
+                </div>
                 <InputError message={errors.due_date} className='mt-2' />
               </div>
             </div>

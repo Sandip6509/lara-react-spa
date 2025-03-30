@@ -82,7 +82,6 @@ export default function Table({
                     )}
                 </tbody>
             </table>
-            {/* <Pagination currentPage={currentPage} totalPages={totalPages} onPageChange={setCurrentPage} /> */}
         </div>
     );
 }

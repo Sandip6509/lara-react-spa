@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\Storage;
 
 /**
  * 
@@ -57,6 +58,11 @@ class Task extends Model
         return [
             'due_date' => 'date:Y-m-d',
         ];
+    }
+
+    public function getImagePathAttribute()
+    {
+        return Storage::url($this->attributes['image_path']) ?? null;
     }
 
     public function project(): BelongsTo

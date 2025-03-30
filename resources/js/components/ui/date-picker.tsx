@@ -14,7 +14,7 @@ interface DatePickerProps {
 export default function DatePickerInput({ value, onChange, id, name, className }: DatePickerProps) {
     const [date, setDate] = useState(value ? new Date(value) : null);
 
-    const handleDateChange = (date: Date | null) => {
+    const handleDateChange: (date: Date | null) => void = (date) => {
         setDate(date);
         onChange(date ? date.toISOString().split('T')[0] : '');
     };
@@ -34,6 +34,7 @@ export default function DatePickerInput({ value, onChange, id, name, className }
             dateFormat='yyyy-MM-dd'
             showPopperArrow={false}
             placeholderText='Select Date'
+            wrapperClassName="w-full"
         />
     );
 }

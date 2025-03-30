@@ -10,13 +10,13 @@ export const STATUS_TEXT_MAP = {
     completed: 'Completed',
 } as const;
 
-export const TASK_PRIORITY_CLASS_MAP = {
+export const PRIORITY_CLASS_MAP = {
     low: 'bg-gray-600',
     medium: 'bg-amber-600',
     high: 'bg-red-600',
 } as const;
 
-export const TASK_PRIORITY_TEXT_MAP = {
+export const PRIORITY_TEXT_MAP = {
     low: 'Low',
     medium: 'Medium',
     high: 'High',
