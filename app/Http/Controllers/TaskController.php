@@ -105,7 +105,6 @@ class TaskController extends Controller
             'task' => $task,
             'projects' => $projects,
             'users' => $users,
-            'isEdit' => true,
         ]);
     }
 

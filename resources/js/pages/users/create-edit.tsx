@@ -9,7 +9,7 @@ import { LoaderCircle } from 'lucide-react';
 import { FormEvent } from 'react'
 
 export default function CreateEdit() {
-    const { user, isEdit } = usePage<{ user: UserForm, isEdit: boolean }>().props;
+    const { user } = usePage<{ user: UserForm }>().props;
 
     // Define breadcrumbs dynamically based on isEdit
     const breadcrumbs: BreadcrumbItem[] = [
@@ -18,8 +18,8 @@ export default function CreateEdit() {
             href: route('users.index'),
         },
         {
-            title: isEdit ? 'Edit' : 'Create',
-            href: isEdit ? route('users.edit', user?.id) : route('users.create'),
+            title: user ? 'Edit' : 'Create',
+            href: user ? route('users.edit', user?.id) : route('users.create'),
         }
     ];
 
@@ -29,14 +29,14 @@ export default function CreateEdit() {
         email: user?.email || '',
         password: user?.password || '',
         password_confirmation: user?.password_confirmation || '',
-        ...(isEdit && { _method: 'PUT' }),
+        ...(user && { _method: 'PUT' }),
     });
 
     // Handle form submission
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (isEdit) {
+        if (user) {
             post(route('users.update', user.id));
         } else {
             post(route('users.store'));
@@ -44,11 +44,11 @@ export default function CreateEdit() {
     };
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={isEdit ? 'Edit' : 'Create'} />
+            <Head title={user ? 'Edit' : 'Create'} />
             <div className='w-full h-full flex flex-col p-6'>
                 <div className='flex justify-between items-center mb-6'>
                     <h2 className='text-2xl font-bold text-foreground'>
-                        {isEdit ? 'Edit' : 'Create'}
+                        {user ? 'Edit' : 'Create'}
                     </h2>
                 </div>
                 <div className='border rounded-lg shadow-sm p-6'>

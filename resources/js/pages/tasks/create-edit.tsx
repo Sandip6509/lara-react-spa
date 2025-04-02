@@ -12,6 +12,8 @@ import InputError from '@/components/input-error';
 import DatePickerInput from '@/components/ui/date-picker';
 import { Textarea } from '@/components/ui/textarea';
 import { LoaderCircle } from 'lucide-react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useInitials } from '@/hooks/use-initials';
 
 interface Project {
     id: number;
@@ -29,8 +31,8 @@ interface CreateEditProps {
 }
 
 export default function CreateEdit({ projects, users }: CreateEditProps) {
-    const { task, isEdit } = usePage<{ task: TaskForm, isEdit: boolean }>().props;
-
+    const { task } = usePage<{ task: TaskForm }>().props;
+    const getInitials = useInitials();
     // Define breadcrumbs dynamically based on isEdit
     const breadcrumbs: BreadcrumbItem[] = [
         {
@@ -38,8 +40,8 @@ export default function CreateEdit({ projects, users }: CreateEditProps) {
             href: route('tasks.index'),
         },
         {
-            title: isEdit ? 'Edit' : 'Create',
-            href: isEdit ? route('tasks.edit', task?.id) : route('tasks.create'),
+            title: task ? 'Edit' : 'Create',
+            href: task ? route('tasks.edit', task?.id) : route('tasks.create'),
         },
     ];
 
@@ -53,14 +55,14 @@ export default function CreateEdit({ projects, users }: CreateEditProps) {
         project_id: task?.project_id || '',
         assigned_user_id: task?.assigned_user_id || '',
         priority: task?.priority || '',
-        ...(isEdit && { _method: 'PUT' }),
+        ...(task && { _method: 'PUT' }),
     });
 
     // Handle form submission
     const onSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
-        if (isEdit) {
+        if (task) {
             post(route('tasks.update', task.id));
         } else {
             post(route('tasks.store'));
@@ -69,11 +71,11 @@ export default function CreateEdit({ projects, users }: CreateEditProps) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title={isEdit ? 'Edit' : 'Create'} />
+            <Head title={ task ? 'Edit' : 'Create' } />
             <div className='w-full h-full flex flex-col p-6'>
                 <div className='flex justify-between items-center mb-6'>
                     <h2 className='text-2xl font-bold text-foreground'>
-                        {isEdit ? 'Edit' : 'Create'}
+                        { task ? 'Edit' : 'Create' }
                     </h2>
                 </div>
                 <div className='border rounded-lg shadow-sm p-6'>
@@ -130,12 +132,13 @@ export default function CreateEdit({ projects, users }: CreateEditProps) {
                                     Task Image
                                 </Label>
                                 <div className='flex gap-2'>
-                                    {isEdit && task?.image_path && (
-                                        <img
-                                            src={typeof task.image_path === 'string' ? task.image_path : undefined}
-                                            alt='Task Image'
-                                            className='w-9 h-9 object-cover rounded-md'
-                                        />
+                                    {task && task?.image_path && (
+                                        <Avatar className='w-9 h-9 object-cover rounded-md'>
+                                        <AvatarImage src={typeof task.image_path === 'string' ? task.image_path : undefined} alt={task.name} preview={true} previewSrc={typeof task.image_path === 'string' ? task.image_path : undefined}  />
+                                        <AvatarFallback className="rounded-md bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
+                                          {getInitials(task?.name || '')}
+                                        </AvatarFallback>
+                                      </Avatar>
                                     )}
                                     <Input
                                         id='image_path'

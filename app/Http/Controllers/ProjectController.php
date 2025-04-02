@@ -86,7 +86,6 @@ class ProjectController extends Controller
     {
         return Inertia::render('projects/create-edit',[
             'project' => $project,
-            'isEdit' => true, 
         ]);
     }
 

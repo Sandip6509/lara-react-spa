@@ -32,7 +32,7 @@ function useUserFilters(initialParams: Record<string, string | undefined>) {
                 .filter(([, value]) => value !== undefined && value !== null && value !== '')
         );
 
-        router.get(route('tasks.index'), queryParams, {
+        router.get(route('users.index'), queryParams, {
             preserveState: true,
             replace: true,
             onSuccess: () => {

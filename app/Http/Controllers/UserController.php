@@ -83,7 +83,6 @@ class UserController extends Controller
     {
         return Inertia::render('users/create-edit', [
             'user' => $user,
-            'isEdit' => true,
         ]);
     }
 

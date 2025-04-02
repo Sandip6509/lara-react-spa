@@ -57,6 +57,7 @@ class Task extends Model
     {
         return [
             'due_date' => 'date:Y-m-d',
+            'created_at' => 'date:Y-m-d',
         ];
     }
 

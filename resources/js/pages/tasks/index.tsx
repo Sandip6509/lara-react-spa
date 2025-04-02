@@ -8,6 +8,8 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import { STATUS_CLASS_MAP, STATUS_TEXT_MAP } from '@/constants';
 import Table from '@/components/ui/table';
 import SearchFilter from '@/components/ui/search-filter';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { useInitials } from '@/hooks/use-initials';
 
 const breadcrumbs: BreadcrumbItem[] = [
     {
@@ -56,6 +58,7 @@ function useTaskFilters(initialParams: Record<string, string | undefined>) {
 }
 
 export default function Task({ tasks, queryParams, success }: TaskProps) {
+    const getInitials = useInitials();
     const { filters, setFilters } = useTaskFilters({
         name: queryParams?.name || '',
         status: queryParams?.status || '',
@@ -84,7 +87,12 @@ export default function Task({ tasks, queryParams, success }: TaskProps) {
 
     const columns = useMemo(() => [
         { accessor: 'id', label: 'ID', sortable: true },
-        { accessor: 'image_path', label: 'Image', render: (item: Task) => <img src={item.image_path} alt={item.name} className='w-8 h-8 rounded' loading="lazy" />, sortable: true },
+        { accessor: 'image_path', label: 'Image', render: (item: Task) => <Avatar className='w-9 h-9 object-cover rounded-md'>
+            <AvatarImage src={typeof item.image_path === 'string' ? item.image_path : undefined} alt={item.name} preview={true} previewSrc={typeof item.image_path === 'string' ? item.image_path : undefined} />
+            <AvatarFallback className="rounded-md bg-neutral-200 text-black dark:bg-neutral-700 dark:text-white">
+                {getInitials(item?.name || '')}
+            </AvatarFallback>
+        </Avatar>, sortable: true },
         { accessor: 'name', label: 'Name', sortable: true },
         { accessor: 'status', label: 'Status', render: (item: Task) => <span className={`px-2 py-1 rounded text-xs font-semibold text-foreground ${STATUS_CLASS_MAP[item.status as keyof typeof STATUS_CLASS_MAP]}`}>{STATUS_TEXT_MAP[item.status as keyof typeof STATUS_TEXT_MAP]}</span>, sortable: true },
         { accessor: 'created_at', label: 'Create At', sortable: true },
@@ -98,7 +106,7 @@ export default function Task({ tasks, queryParams, success }: TaskProps) {
                 </div >
             ), sortable: false
         },
-    ], []);
+    ], [getInitials]);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title='Tasks' />

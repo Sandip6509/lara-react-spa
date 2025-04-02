@@ -2,6 +2,7 @@ import * as React from 'react'
 import * as AvatarPrimitive from '@radix-ui/react-avatar'
 
 import { cn } from '@/lib/utils'
+import { Dialog, DialogContent, DialogTrigger } from './dialog';
 
 function Avatar({
     className,
@@ -19,17 +20,47 @@ function Avatar({
     )
 }
 
+interface AvatarImageProps extends React.ComponentProps<typeof AvatarPrimitive.Image> {
+    preview?: boolean;
+    previewSrc?: string;
+    previewTitle?: string;
+}
+
 function AvatarImage({
     className,
+    preview = false,
+    previewSrc,
+    previewTitle = 'Image preview',
     ...props
-}: React.ComponentProps<typeof AvatarPrimitive.Image>) {
-    return (
+}: AvatarImageProps) {
+    const image = (
         <AvatarPrimitive.Image
             data-slot='avatar-image'
             className={cn('aspect-square size-full', className)}
             {...props}
         />
     )
+
+    if (preview && (previewSrc || props.src)) {
+        return (
+            <Dialog>
+                <DialogTrigger asChild>
+                    <button className="relative after:absolute after:inset-0 after:rounded-full after:bg-black/10 after:opacity-0 hover:after:opacity-100 after:transition-opacity">
+                        {image}
+                    </button>
+                </DialogTrigger>
+                <DialogContent className="max-w-[90vw] max-h-[90vh] p-0 bg-transparent border-none">
+                    <img
+                        src={previewSrc || props.src?.toString()}
+                        alt={props.alt || previewTitle}
+                        className="w-full h-full object-contain rounded-md"
+                    />
+                </DialogContent>
+            </Dialog>
+        );
+    }
+
+    return image;
 }
 
 function AvatarFallback({
